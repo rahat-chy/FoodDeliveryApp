@@ -1,0 +1,19 @@
+# -------- React Native / Expo --------
+FoodDeliveryAppFront/node_modules
+FoodDeliveryAppFront/.expo
+FoodDeliveryAppFront/.expo-shared
+FoodDeliveryAppFront/.metro
+FoodDeliveryAppFront/dist
+FoodDeliveryAppFront/build
+FoodDeliveryAppFront/web-build
+FoodDeliveryAppFront/.parcel-cache
+FoodDeliveryAppFront/ios
+FoodDeliveryAppFront/android
+
+
+# -------- General --------
+*.log
+*.tmp
+*.swp
+*.swo
+.DS_Store
