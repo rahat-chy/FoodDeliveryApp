@@ -50,7 +50,13 @@ export default function TabTwoScreen() {
         const jsonValue = await AsyncStorage.getItem("FoodDeliveryApp");
         const storageItems = jsonValue != null ? JSON.parse(jsonValue) : null;
 
-        setMenuItems(Menu_Items.sort((a, b) => a.id - b.id));
+        if (storageItems && storageItems.length) {
+          setMenuItems(
+            storageItems.sort((a: MenuItem, b: MenuItem) => a.id - b.id)
+          );
+        } else {
+          setMenuItems(Menu_Items.sort((a, b) => a.id - b.id));
+        }
       } catch (e) {
         console.error(e);
       }
