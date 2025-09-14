@@ -2,7 +2,6 @@ import { Menu_Items, MenuItem } from "@/constants/MenuItems";
 import { MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
-import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
 import {
@@ -19,7 +18,7 @@ import {
   Vibration,
   View,
 } from "react-native";
-import { Pressable, TextInput } from "react-native-gesture-handler";
+import { Pressable } from "react-native-gesture-handler";
 import Animated, { LinearTransition } from "react-native-reanimated";
 import { ThemeContext } from "../../context/ThemeContext";
 
@@ -38,10 +37,6 @@ export default function TabTwoScreen() {
   const Container = Platform.OS === "web" ? ScrollView : SafeAreaView;
 
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [imageUri, setImageUri] = useState<string | null>(null);
-  const [updateableItem, setUpdateableItem] = useState<MenuItem | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -78,129 +73,13 @@ export default function TabTwoScreen() {
     storeData();
   }, [menuItems]);
 
-  const requestCameraPermission = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== "granted") {
-      alert("Sorry, we need camera permissions to make this work!");
-      return false;
-    }
-    return true;
-  };
-
-  const pickImage = async () => {
-    const hasPermission = await requestCameraPermission();
-    if (!hasPermission) return;
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
-    }
-  };
-
-  const resetImage = async () => {
-    setImageUri(null);
-  };
-
-  const addItem = () => {
-    if (title.trim()) {
-      const newId: number =
-        menuItems.reduce((prev, current) =>
-          current.id > prev.id ? current : prev
-        ).id + 1;
-
-      setMenuItems([
-        {
-          id: newId,
-          title: title,
-          description: description,
-          image: imageUri,
-        },
-        ...menuItems,
-      ]);
-      cancelItem();
-    } else {
-      showAlert();
-    }
-  };
-
-  const showAlert = () => {
-    Vibration.vibrate([2000, 1000, 2000]);
-
-    const message = "Please Insert Title";
-
-    if (Platform.OS === "web") {
-      window.alert(message);
-    } else {
-      Alert.alert(
-        "",
-        message,
-        [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-        {
-          cancelable: true,
-        }
-      );
-    }
-  };
-
   const removeItem = (id: number) => {
     setMenuItems(menuItems.filter((item) => item.id !== id));
   };
 
-  const intiateUpdate = (id: number) => {
-    const initatingItem = menuItems.find((item) => item.id === id);
-    if (initatingItem) {
-      setUpdateableItem(initatingItem);
-      setTitle(initatingItem.title);
-      setDescription(initatingItem.description);
-      if (initatingItem.image) {
-        console.log(initatingItem.image === "string");
-        console.log((initatingItem.image as any).uri);
-        setImageUri(
-          typeof initatingItem.image === "string"
-            ? initatingItem.image
-            : Platform.OS === "web"
-            ? (initatingItem.image as any).uri
-            : Image.resolveAssetSource(initatingItem.image).uri
-        );
-      } else {
-        setImageUri(null);
-      }
-    }
-  };
-
-  const cancelItem = () => {
-    setUpdateableItem(null);
-    setTitle("");
-    setDescription("");
-    setImageUri(null);
-  };
-
-  const updateItem = () => {
-    if (updateableItem && title.trim()) {
-      const updateableItemIndex: number = menuItems.findIndex(
-        (item) => item.id === updateableItem.id
-      );
-      menuItems[updateableItemIndex].title = title;
-      menuItems[updateableItemIndex].description = description;
-      menuItems[updateableItemIndex].image = imageUri;
-      setMenuItems(menuItems);
-
-      setUpdateableItem(null);
-      setTitle("");
-      setDescription("");
-      setImageUri(null);
-    } else {
-      showAlert();
-    }
-  };
-
   const showYesNoAlert = (id: number) => {
+    Vibration.vibrate([2000, 1000, 2000]);
+
     const message = "Are you sure you want to Delete this item?";
 
     if (Platform.OS === "web") {
@@ -298,51 +177,18 @@ export default function TabTwoScreen() {
             />
           </RNAnimated.View>
         </Pressable>
-        <TextInput
-          placeholder="Add new item title"
-          placeholderTextColor="gray"
-          value={title}
-          onChangeText={setTitle}
-          style={styles.title}
-        />
-        <TextInput
-          placeholder="Add new item description"
-          placeholderTextColor="gray"
-          value={description}
-          onChangeText={setDescription}
-          style={styles.description}
-          multiline
-        />
-        <View style={styles.imageTextRow}>
-          <Pressable onPress={pickImage}>
-            <Text style={styles.pickImageText}>Pick Image</Text>
-          </Pressable>
-          <Pressable onPress={resetImage}>
-            <Text style={styles.resetImageText}>Reset Image</Text>
-          </Pressable>
-        </View>
 
-        <View style={styles.imagePreviewView}>
-          {imageUri ? (
-            <Image source={{ uri: imageUri }} style={styles.imagePreview} />
-          ) : (
-            <Text style={styles.imagePreviewText}>No Image Selected</Text>
-          )}
-        </View>
-        {updateableItem ? (
-          <View style={{ flexDirection: "row" }}>
-            <Pressable onPress={cancelItem} style={styles.cancelButton}>
-              <Text style={styles.cancelText}>Cancel</Text>
-            </Pressable>
-            <Pressable onPress={updateItem} style={styles.updateButton}>
-              <Text style={styles.updateText}>Update</Text>
-            </Pressable>
-          </View>
-        ) : (
-          <Pressable onPress={addItem} style={styles.addButton}>
-            <Text style={styles.addText}>Add</Text>
-          </Pressable>
-        )}
+        <Text
+          onPress={() =>
+            router.push({
+              pathname: "/createUpdate",
+              params: { id: "create" },
+            })
+          }
+          style={styles.addText}
+        >
+          Add a New Item
+        </Text>
       </View>
       <Animated.FlatList
         data={menuItems}
@@ -391,7 +237,12 @@ export default function TabTwoScreen() {
 
             <View style={{ flexDirection: "column" }}>
               <Pressable
-                onPress={() => intiateUpdate(item.id)}
+                onPress={() =>
+                  router.push({
+                    pathname: "/createUpdate",
+                    params: { id: item.id },
+                  })
+                }
                 style={{
                   paddingTop: width * 0.05,
                   paddingLeft: width * 0.015,
@@ -472,110 +323,12 @@ function createStyles(theme: any, colorScheme: any) {
       width: "25%",
       height: "100%",
     },
-    title: {
-      height: height * 0.05,
-      borderColor: "gray",
-      borderWidth: 1,
-      borderRadius: 15,
-      padding: 7,
-      margin: 10,
-      fontSize: 15,
-      color: colorScheme === "dark" ? "white" : "black",
-    },
-    description: {
-      height: height * 0.09,
-      borderColor: "gray",
-      borderWidth: 1,
-      borderRadius: 15,
-      padding: 7,
-      margin: 10,
-      marginTop: 0,
-      fontSize: 15,
-      textAlignVertical: "top",
-      color: colorScheme === "dark" ? "white" : "black",
-    },
-    addButton: {
-      justifyContent: "center",
-      alignItems: "center",
-      padding: 10,
-      backgroundColor: colorScheme === "dark" ? "cyan" : "orange",
-      width: width * 0.14,
-      height: height * 0.052,
-      marginLeft: width * 0.82,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: "gray",
-    },
     addText: {
-      color: "white",
-      fontWeight: "bold",
-    },
-    pickImageText: {
-      color: colorScheme === "dark" ? "cyan" : "orange",
+      color: colorScheme === "dark" ? "orange" : "blue",
       fontWeight: "bold",
       textDecorationLine: "underline",
-      marginLeft: width * 0.52,
-      marginBottom: height * 0.01,
-    },
-    resetImageText: {
-      color: colorScheme === "dark" ? "cyan" : "orange",
-      fontWeight: "bold",
-      textDecorationLine: "underline",
-      marginLeft: width * 0.03,
-      marginBottom: height * 0.01,
-    },
-    imagePreviewView: {
-      borderWidth: 1,
-      borderColor: "gray",
-      height: height * 0.15,
-      width: width * 0.7,
-      marginLeft: width * 0.15,
-      marginBottom: height * 0.01,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    imagePreview: {
-      width: "100%",
-      height: "100%",
-    },
-    imagePreviewText: {
-      color: colorScheme === "dark" ? "white" : "black",
-      textAlign: "center",
-    },
-    imageTextRow: {
-      flexDirection: "row",
-    },
-    cancelButton: {
-      justifyContent: "center",
-      alignItems: "center",
-      padding: 10,
-      backgroundColor: "red",
-      width: width * 0.19,
-      height: height * 0.052,
-      marginLeft: width * 0.55,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: "gray",
-    },
-    cancelText: {
-      color: "white",
-      fontWeight: "bold",
-    },
-    updateButton: {
-      justifyContent: "center",
-      alignItems: "center",
-      padding: 10,
-      backgroundColor: "green",
-      width: width * 0.19,
-      height: height * 0.052,
-      marginLeft: width * 0.04,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: "gray",
-    },
-    updateText: {
-      color: "white",
-      fontWeight: "bold",
+      paddingLeft: width * 0.05,
+      paddingBottom: height * 0.02,
     },
     switchTrack: {
       width: 60,
