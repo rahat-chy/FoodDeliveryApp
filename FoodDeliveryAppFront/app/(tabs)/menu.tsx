@@ -2,7 +2,7 @@ import { Menu_Items, MenuItem } from "@/constants/MenuItems";
 import { MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
-import { useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
 import {
   Alert,
@@ -38,6 +38,7 @@ export default function TabTwoScreen() {
 
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const router = useRouter();
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,6 +108,12 @@ export default function TabTwoScreen() {
       toValue: colorScheme === "dark" ? 30 : 0,
       useNativeDriver: true,
     }).start();
+
+    navigation.setOptions({
+      tabBarStyle: {
+        backgroundColor: colorScheme === "dark" ? "black" : "white",
+      },
+    });
   }, [colorScheme]);
 
   useEffect(() => {

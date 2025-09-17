@@ -4,7 +4,10 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { HeaderBackButton } from "@react-navigation/elements";
 import { Tabs, useRouter } from "expo-router";
 import React from "react";
+import { Dimensions } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+const { width, height } = Dimensions.get("window");
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -20,12 +23,10 @@ export default function TabLayout() {
           headerTintColor: theme.text,
           tabBarStyle: {
             backgroundColor: theme.background,
-            height: 95,
-            paddingBottom: 8,
+            height: height * 0.07,
           },
           tabBarLabelStyle: {
             fontSize: 12,
-            paddingBottom: 2,
           },
           tabBarActiveTintColor: theme.tabIconSelected,
           tabBarInactiveTintColor: theme.tabIconDefault,
@@ -59,6 +60,12 @@ export default function TabLayout() {
                 onPress={() => router.back()}
               />
             ),
+            tabBarStyle: [
+              {
+                backgroundColor: theme.background,
+                height: height * 0.07,
+              },
+            ],
             tabBarIcon: ({ color, size }) => (
               <Feather name="book-open" size={size} color={color} />
             ),
