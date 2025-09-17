@@ -2,7 +2,7 @@ import { Menu_Items, MenuItem } from "@/constants/MenuItems";
 import { ThemeContext } from "@/context/ThemeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { useContext, useEffect, useLayoutEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 
 const { width, height } = Dimensions.get("window");
@@ -19,12 +19,6 @@ export default function ItemDetailsScreen() {
   const [detailItem, setDetailItem] = useState<MenuItem | null>(null);
   const { colorScheme, setColorScheme, theme } = themeContext;
   const styles = createStyles(theme, colorScheme);
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      title: `Details of Item ${id}`,
-    });
-  }, [navigation, id]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,6 +40,12 @@ export default function ItemDetailsScreen() {
 
     fetchData();
   }, [Menu_Items]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: `Details of Item ${detailItem?.title}`,
+    });
+  }, [detailItem]);
 
   return (
     <View style={styles.contentContainer}>
