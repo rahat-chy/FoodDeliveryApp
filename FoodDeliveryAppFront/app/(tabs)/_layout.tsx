@@ -1,18 +1,21 @@
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
+import { ThemeContext } from "@/context/ThemeContext";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { HeaderBackButton } from "@react-navigation/elements";
 import { Tabs, useRouter } from "expo-router";
-import React from "react";
+import React, { useContext } from "react";
 import { Dimensions } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const { width, height } = Dimensions.get("window");
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const themeContext = useContext(ThemeContext);
 
-  const theme = colorScheme === "dark" ? Colors.dark : Colors.light;
+  if (!themeContext) {
+    throw new Error("ThemeContext must be used inside ThemeProvider");
+  }
+
+  const { colorScheme, setColorScheme, theme } = themeContext;
   const router = useRouter();
 
   return (
