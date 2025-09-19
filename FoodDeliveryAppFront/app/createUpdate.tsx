@@ -1,3 +1,4 @@
+import ThemeToggle from "@/components/ThemeToggle";
 import { Menu_Items, MenuItem } from "@/constants/MenuItems";
 import { ThemeContext } from "@/context/ThemeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -210,6 +211,7 @@ export default function createUpdateScreen() {
 
   return (
     <Container style={{ flex: 1, backgroundColor: theme.background }}>
+      <ThemeToggle />
       <View>
         <TextInput
           placeholder="Add new item title"

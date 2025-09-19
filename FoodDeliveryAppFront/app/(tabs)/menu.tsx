@@ -1,5 +1,6 @@
+import ThemeToggle from "@/components/ThemeToggle";
 import { Menu_Items, MenuItem } from "@/constants/MenuItems";
-import { MaterialIcons, Octicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import { useNavigation, useRouter } from "expo-router";
@@ -159,32 +160,7 @@ export default function TabTwoScreen() {
         </Text>
       </View>
       <View>
-        <Pressable
-          onPress={() =>
-            setColorScheme(colorScheme === "light" ? "dark" : "light")
-          }
-          style={styles.switchTrack}
-        >
-          <View
-            style={[
-              StyleSheet.absoluteFill,
-              {
-                backgroundColor: colorScheme === "dark" ? "#333" : "#eee",
-                borderRadius: 25,
-              },
-            ]}
-          />
-          <RNAnimated.View
-            style={[styles.knob, { transform: [{ translateX }] }]}
-          >
-            <Octicons
-              name={colorScheme === "dark" ? "moon" : "sun"}
-              size={20}
-              color={colorScheme === "dark" ? "cyan" : "orange"}
-            />
-          </RNAnimated.View>
-        </Pressable>
-
+        <ThemeToggle />
         <Text
           onPress={() =>
             router.push({

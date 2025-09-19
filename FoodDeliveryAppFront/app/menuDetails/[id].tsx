@@ -1,3 +1,4 @@
+import ThemeToggle from "@/components/ThemeToggle";
 import { Menu_Items, MenuItem } from "@/constants/MenuItems";
 import { ThemeContext } from "@/context/ThemeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -49,20 +50,25 @@ export default function ItemDetailsScreen() {
 
   return (
     <View style={styles.contentContainer}>
-      <Text style={styles.titleText}>{detailItem?.title}</Text>
+      <View style={{ height: height * 0.1 }}>
+        <ThemeToggle />
+      </View>
+      <View style={styles.itemDetailsContainer}>
+        <Text style={styles.titleText}>{detailItem?.title}</Text>
 
-      {detailItem?.image && (
-        <Image
-          style={styles.image}
-          source={
-            typeof detailItem.image === "string"
-              ? { uri: detailItem.image }
-              : detailItem.image
-          }
-        />
-      )}
+        {detailItem?.image && (
+          <Image
+            style={styles.image}
+            source={
+              typeof detailItem.image === "string"
+                ? { uri: detailItem.image }
+                : detailItem.image
+            }
+          />
+        )}
 
-      <Text style={styles.description}>{detailItem?.description}</Text>
+        <Text style={styles.description}>{detailItem?.description}</Text>
+      </View>
     </View>
   );
 }
@@ -74,9 +80,11 @@ function createStyles(theme: any, colorScheme: any) {
       paddingBottom: 20,
       paddingHorizontal: 12,
       backgroundColor: theme.background,
+      height: "100%",
+    },
+    itemDetailsContainer: {
       justifyContent: "center",
       alignItems: "center",
-      height: "100%",
     },
     titleText: {
       fontSize: 30,
