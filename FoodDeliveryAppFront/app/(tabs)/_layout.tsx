@@ -5,6 +5,10 @@ import { Tabs, useRouter } from "expo-router";
 import React, { useContext } from "react";
 import { Dimensions } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 const { width, height } = Dimensions.get("window");
 
@@ -17,64 +21,72 @@ export default function TabLayout() {
 
   const { colorScheme, setColorScheme, theme } = themeContext;
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Tabs
-        screenOptions={{
-          headerStyle: { backgroundColor: theme.headerBackground },
-          headerTintColor: theme.text,
-          tabBarStyle: {
-            backgroundColor: theme.background,
-            height: height * 0.07,
-          },
-          tabBarLabelStyle: {
-            fontSize: 12,
-          },
-          tabBarActiveTintColor: theme.tabIconSelected,
-          tabBarInactiveTintColor: theme.tabIconDefault,
+      <SafeAreaView
+        style={{
+          flex: 1,
+          paddingBottom: Math.min(insets.bottom, -100),
         }}
+        edges={["bottom"]}
       >
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: "Home",
-            headerShown: false,
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="home-outline" size={size} color={color} />
-            ),
+        <Tabs
+          screenOptions={{
+            headerStyle: { backgroundColor: theme.headerBackground },
+            headerTintColor: theme.text,
+            tabBarStyle: {
+              backgroundColor: theme.background,
+              height: height * 0.14,
+            },
+            tabBarLabelStyle: {
+              fontSize: 12,
+            },
+            tabBarActiveTintColor: theme.tabIconSelected,
+            tabBarInactiveTintColor: theme.tabIconDefault,
           }}
-        />
-        <Tabs.Screen
-          name="menu"
-          options={{
-            title: "Menu",
-            headerTitle: "MENU",
-            headerStyle: {
-              backgroundColor: "rgba(192, 178, 136, 1)",
-            },
-            headerTitleStyle: {
-              fontWeight: "bold",
-              color: "white",
-            },
-            headerLeft: ({ tintColor }) => (
-              <HeaderBackButton
-                tintColor="white"
-                onPress={() => router.back()}
-              />
-            ),
-            tabBarStyle: [
-              {
-                backgroundColor: theme.background,
-                height: height * 0.07,
+        >
+          <Tabs.Screen
+            name="index"
+            options={{
+              title: "Home",
+              headerShown: false,
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="home-outline" size={size} color={color} />
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="menu"
+            options={{
+              title: "Menu",
+              headerTitle: "MENU",
+              headerStyle: {
+                backgroundColor: "rgba(192, 178, 136, 1)",
               },
-            ],
-            tabBarIcon: ({ color, size }) => (
-              <Feather name="book-open" size={size} color={color} />
-            ),
-          }}
-        />
-      </Tabs>
+              headerTitleStyle: {
+                fontWeight: "bold",
+                color: "white",
+              },
+              headerLeft: ({ tintColor }) => (
+                <HeaderBackButton
+                  tintColor="white"
+                  onPress={() => router.back()}
+                />
+              ),
+              tabBarStyle: [
+                {
+                  backgroundColor: theme.background,
+                },
+              ],
+              tabBarIcon: ({ color, size }) => (
+                <Feather name="book-open" size={size} color={color} />
+              ),
+            }}
+          />
+        </Tabs>
+      </SafeAreaView>
     </GestureHandlerRootView>
   );
 }

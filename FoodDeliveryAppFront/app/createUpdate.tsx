@@ -211,7 +211,9 @@ export default function createUpdateScreen() {
 
   return (
     <Container style={{ flex: 1, backgroundColor: theme.background }}>
-      <ThemeToggle />
+      <View style={{ height: height * 0.1 }}>
+        <ThemeToggle />
+      </View>
       <View>
         <TextInput
           placeholder="Add new item title"
