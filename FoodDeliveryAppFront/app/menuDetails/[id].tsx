@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
+import { NetworkStatusBanner } from "../networkStatusBanner";
 
 const { width, height } = Dimensions.get("window");
 
@@ -49,25 +50,28 @@ export default function ItemDetailsScreen() {
   }, [detailItem]);
 
   return (
-    <View style={styles.contentContainer}>
-      <View style={{ height: height * 0.1 }}>
-        <ThemeToggle />
-      </View>
-      <View style={styles.itemDetailsContainer}>
-        <Text style={styles.titleText}>{detailItem?.title}</Text>
+    <View>
+      <NetworkStatusBanner />
+      <View style={styles.contentContainer}>
+        <View style={{ height: height * 0.1 }}>
+          <ThemeToggle />
+        </View>
+        <View style={styles.itemDetailsContainer}>
+          <Text style={styles.titleText}>{detailItem?.title}</Text>
 
-        {detailItem?.image && (
-          <Image
-            style={styles.image}
-            source={
-              typeof detailItem.image === "string"
-                ? { uri: detailItem.image }
-                : detailItem.image
-            }
-          />
-        )}
+          {detailItem?.image && (
+            <Image
+              style={styles.image}
+              source={
+                typeof detailItem.image === "string"
+                  ? { uri: detailItem.image }
+                  : detailItem.image
+              }
+            />
+          )}
 
-        <Text style={styles.description}>{detailItem?.description}</Text>
+          <Text style={styles.description}>{detailItem?.description}</Text>
+        </View>
       </View>
     </View>
   );

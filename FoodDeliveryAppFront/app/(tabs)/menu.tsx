@@ -2,7 +2,6 @@ import ThemeToggle from "@/components/ThemeToggle";
 import { Menu_Items, MenuItem } from "@/constants/MenuItems";
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import NetInfo from "@react-native-community/netinfo";
 import { useNavigation, useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
 import {
@@ -22,6 +21,7 @@ import {
 import { Pressable } from "react-native-gesture-handler";
 import Animated, { LinearTransition } from "react-native-reanimated";
 import { ThemeContext } from "../../context/ThemeContext";
+import { NetworkStatusBanner } from "../networkStatusBanner";
 
 const { width, height } = Dimensions.get("window");
 
@@ -131,35 +131,10 @@ export default function TabTwoScreen() {
     });
   };
 
-  const useNetworkStatus = () => {
-    const [isConnected, setIsConnected] = useState<boolean | null>(true);
-
-    useEffect(() => {
-      const unsubscribe = NetInfo.addEventListener((state) => {
-        setIsConnected(state.isConnected);
-      });
-
-      return () => unsubscribe();
-    }, []);
-
-    return isConnected;
-  };
-
-  const isConnected = useNetworkStatus();
-
   return (
     <Container style={{ flex: 1, backgroundColor: theme.background }}>
-      <View
-        style={{
-          alignItems: "center",
-          backgroundColor: isConnected ? "#8ce783ff" : "#e05353ff",
-        }}
-      >
-        <Text style={{ color: "white" }}>
-          {isConnected ? "You are online ✅" : "No internet connection ❌"}
-        </Text>
-      </View>
       <View>
+        <NetworkStatusBanner />
         <ThemeToggle />
         <Text
           onPress={() =>

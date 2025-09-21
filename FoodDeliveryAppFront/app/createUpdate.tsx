@@ -20,6 +20,7 @@ import {
   Vibration,
   View,
 } from "react-native";
+import { NetworkStatusBanner } from "./networkStatusBanner";
 
 const { width, height } = Dimensions.get("window");
 
@@ -211,6 +212,7 @@ export default function createUpdateScreen() {
 
   return (
     <Container style={{ flex: 1, backgroundColor: theme.background }}>
+      <NetworkStatusBanner />
       <View style={{ height: height * 0.1 }}>
         <ThemeToggle />
       </View>
